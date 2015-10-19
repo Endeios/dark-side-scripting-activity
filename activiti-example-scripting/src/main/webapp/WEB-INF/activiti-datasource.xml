@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean class="org.apache.commons.dbcp.BasicDataSource" id="activitiDS">
+		<property name="driverClassName" value="org.postgresql.Driver"></property>
+		<property name="url" value="${activiti.db.url}"></property>
+		<property name="username" value="${activiti.db.user}"></property>
+		<property name="password" value="${activiti.db.pass}"></property>
+		<property name="initialSize" value="${global.initial_size}"></property>
+		<property name="validationQuery" value="SELECT 1"></property>
+	</bean>
+
+	<bean
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		id="activitiTXM">
+		<property name="dataSource" ref="activitiDS" />
+	</bean>
+	
+	<bean class="rendering.HTMLFormEngine" id="htmlFormEngine"></bean>
+
+	<bean class="org.activiti.spring.SpringProcessEngineConfiguration"
+		id="processEngineConfiguration">
+		<property name="databaseType" value="postgres" />
+		<property name="dataSource" ref="activitiDS" />
+		<property name="transactionManager" ref="activitiTXM" />
+		<property name="databaseSchemaUpdate" value="true" />
+		<property name="formEngines">
+			<map>
+				<entry key="html" value-ref="htmlFormEngine"/>
+			</map>
+		</property>
+	</bean>
+	
+
+	<bean class="org.activiti.spring.ProcessEngineFactoryBean" id="processEngine">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+</beans>

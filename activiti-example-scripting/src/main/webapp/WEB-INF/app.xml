@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd">
+
+
+	<context:property-placeholder location="classpath:config.properties" />
+	
+	<bean
+		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+	
+	<import resource="domain-datasource.xml" />
+	<import resource="activiti-datasource.xml" />
+	
+	
+
+	<mvc:annotation-driven>
+	</mvc:annotation-driven>
+	<mvc:default-servlet-handler />
+	<mvc:resources location="/ext/blueprint/blueprint/" mapping="/blueprint/**"/>
+	
+	<mvc:tiles-configurer check-refresh="true" validate-definitions="true">
+		<mvc:definitions location="/WEB-INF/layouts/layouts.xml"/>
+		<mvc:definitions location="/WEB-INF/layouts/views.xml"/>
+	</mvc:tiles-configurer>
+	<mvc:view-resolvers >
+		<mvc:tiles />
+		<!-- <mvc:jsp cache-views="true" prefix="/WEB-INF/jsp/" suffix=".jsp" /> -->
+	</mvc:view-resolvers>
+
+
+	<!-- Activiti -->
+
+
+	<bean id="repositoryService" factory-bean="processEngine"
+		factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine"
+		factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine"
+		factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine"
+		factory-method="getHistoryService" />
+	<bean id="managementService" factory-bean="processEngine"
+		factory-method="getManagementService" />
+	<bean id="identityService" factory-bean="processEngine"
+		factory-method="getIdentityService" />
+	<bean id="formService" factory-bean="processEngine"
+		factory-method="getFormService" />
+
+	<jpa:repositories base-package="service"
+		entity-manager-factory-ref="domainEMF" transaction-manager-ref="domainjpaTransactionManager">
+	</jpa:repositories>
+	
+	<bean class="service.BPMManagementService" id="BPMManagementService">
+		<constructor-arg name="barPostion" value="${workflow.bar_position}"/>
+		<constructor-arg name="workFlowName" value="${workflow.name}"/>
+	</bean>
+	
+	<bean class="controller.DocumentController" id="documentController" autowire="byType"/>
+	<bean class="controller.HomeController" id="homeController" autowire="byType"/>
+
+</beans>

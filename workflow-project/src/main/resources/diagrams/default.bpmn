@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.endeios.io/default">
+  <process id="default" name="default Process" isExecutable="true">
+    <startEvent id="start" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="name" name="Name" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="action" name="Action" type="enum" required="true">
+          <activiti:value id="start" name="START"></activiti:value>
+          <activiti:value id="stop" name="STOP"></activiti:value>
+          <activiti:value id="continue" name="CONTINUE"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="usertask1" name="User Task">
+      <extensionElements>
+        <activiti:formProperty id="are_you_sure" name="Are you Sure" type="boolean" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="usertask1"></sequenceFlow>
+    <scriptTask id="set_variables" name="Set Variables" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>global_variable = "i am a global variable"
+
+def local_variable = "i am a local variable"</script>
+    </scriptTask>
+    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="set_variables"></sequenceFlow>
+    <scriptTask id="print_variables" name="Print Variables" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>@Grab('log4j:log4j:1.2.17')
+
+import org.apache.log4j.*
+import groovy.util.logging.*
+
+log = Logger.getLogger(this.class.name)
+log.level=Level.DEBUG
+try{
+    log.info(local_variable)
+    }
+    catch(groovy.lang.MissingPropertyException ex){
+    log.info(ex)
+    }
+println global_variable</script>
+    </scriptTask>
+    <sequenceFlow id="flow3" sourceRef="set_variables" targetRef="print_variables"></sequenceFlow>
+    <endEvent id="end" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="print_variables" targetRef="end"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_default">
+    <bpmndi:BPMNPlane bpmnElement="default" id="BPMNPlane_default">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="150.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="set_variables" id="BPMNShape_set_variables">
+        <omgdc:Bounds height="55.0" width="105.0" x="300.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="print_variables" id="BPMNShape_print_variables">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="85.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="255.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="405.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="555.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

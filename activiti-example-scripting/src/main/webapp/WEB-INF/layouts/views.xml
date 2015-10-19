@@ -1,0 +1,15 @@
+<!DOCTYPE tiles-definitions PUBLIC
+    "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+    "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+ 
+    <definition name="index" extends="site_base">
+        <put-attribute name="body" value="/WEB-INF/views/index.jsp" />
+    </definition>
+ 
+    <definition name="new-process" extends="site_base">
+    	<put-attribute name="title"     value="Create New Process" />
+        <put-attribute name="body" 		value="/WEB-INF/views/new-process.jsp" />
+    </definition>
+    
+</tiles-definitions>
